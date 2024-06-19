@@ -1,0 +1,14 @@
+﻿<?xml version="1.0"?>
+<DTS:ConnectionManager xmlns:DTS="www.microsoft.com/SqlServer/Dts"
+  DTS:ObjectName="UKWWHDSQLWI099.ReconDB"
+  DTS:DTSID="{0F1858FA-9831-4A0A-AF3C-9FACB1106C67}"
+  DTS:CreationName="OLEDB">
+  <DTS:PropertyExpression
+    DTS:Name="ConnectionString">@[$Project::UKWWHDSQLWI099ReconDB_ConnectionString]</DTS:PropertyExpression>
+  <DTS:ObjectData>
+    <DTS:ConnectionManager
+      DTS:ConnectRetryCount="1"
+      DTS:ConnectRetryInterval="5"
+      DTS:ConnectionString="Data Source=UKWWHDSQLWI099;Initial Catalog=ReconDB;Provider=SQLNCLI11.1;Integrated Security=SSPI;Application Name=SSIS-Package-{0F1858FA-9831-4A0A-AF3C-9FACB1106C67}UKWWHDSQLWI099.ReconDB;Auto Translate=False;" />
+  </DTS:ObjectData>
+</DTS:ConnectionManager>
