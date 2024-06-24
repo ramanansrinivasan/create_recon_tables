@@ -26,11 +26,12 @@
           <SSIS:Property SSIS:Name="CreatorComputerName">UKWWHDSQLWI099</SSIS:Property>
           <SSIS:Property SSIS:Name="Description">
           </SSIS:Property>
-          <SSIS:Property SSIS:Name="PasswordVerifier" SSIS:Sensitive="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAUJfCzS892E+JlQpbJ2WtHgAAAAACAAAAAAADZgAAwAAAABAAAACRaooYp+6cFa8cOIkH1o4XAAAAAASAAACgAAAAEAAAAKdWMuEYd3CsvddtuMhR6/aIAAAAR2um8DfmkDFEZrZ6jvouuDfl2oOH+9scy0OoiEUqgbU1WgjprIC0U/ykGcpsmAT58MpSIfqxLan4ZEYJw3P/N7iGf30x+SgH2hU3zRf/hBa6tA1uGaoDisqzXMaggSDiWS1s49TQPLuof34Un6UFf64UU3az3/T/4OYLiSmXbUGOUNN9DRuGwBQAAADXj9qkHp3l9k237Y6trfGtYZHD1g==</SSIS:Property>
+          <SSIS:Property SSIS:Name="PasswordVerifier" SSIS:Sensitive="1">AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAUJfCzS892E+JlQpbJ2WtHgAAAAACAAAAAAADZgAAwAAAABAAAACrFSci/Pql1z990H5UDOOrAAAAAASAAACgAAAAEAAAADC5MXyDklPlu3kJiH83KSaIAAAACGfy+cHv/23NypnARcAS2GgOR2DBIfX5ABgqpAOGajDPLY2Ppy1fb7FzUZX7bif1StLah+TqYvVUVLwm9vtuaNzcoQz/Xh2SlHvWwSHs5mpWHjO1bIvloOtU0sOFBWgzIQVDm8W11IKMC6DVSm5LtCuqFi7foDQY7Lzu9mqJIEaKvMf3TYXw7RQAAACA4Bpy6ejNQffu7kzfEiNZMhAOPA==</SSIS:Property>
           <SSIS:Property SSIS:Name="FormatVersion">1</SSIS:Property>
         </SSIS:Properties>
         <SSIS:Packages>
           <SSIS:Package SSIS:Name="populate_title_recon_tables.dtsx" SSIS:EntryPoint="1" />
+          <SSIS:Package SSIS:Name="populate_inventory_recon_tables.dtsx" SSIS:EntryPoint="1" />
         </SSIS:Packages>
         <SSIS:ConnectionManagers>
           <SSIS:ConnectionManager SSIS:Name="UKWWHDSQLWI099.ReconDB.conmgr" />
@@ -316,6 +317,23 @@
                 <SSIS:Property SSIS:Name="VersionComments">
                 </SSIS:Property>
                 <SSIS:Property SSIS:Name="VersionGUID">{BE9CD012-3EEF-437E-8F59-3B0D3F14ED5A}</SSIS:Property>
+                <SSIS:Property SSIS:Name="PackageFormatVersion">8</SSIS:Property>
+                <SSIS:Property SSIS:Name="Description">
+                </SSIS:Property>
+                <SSIS:Property SSIS:Name="ProtectionLevel">1</SSIS:Property>
+              </SSIS:Properties>
+              <SSIS:Parameters />
+            </SSIS:PackageMetaData>
+            <SSIS:PackageMetaData SSIS:Name="populate_inventory_recon_tables.dtsx">
+              <SSIS:Properties>
+                <SSIS:Property SSIS:Name="ID">{A369D480-AC2D-41DD-B7C6-924C09FA6B75}</SSIS:Property>
+                <SSIS:Property SSIS:Name="Name">Package1</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionMajor">1</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionMinor">0</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionBuild">0</SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionComments">
+                </SSIS:Property>
+                <SSIS:Property SSIS:Name="VersionGUID">{86A39D1F-021C-45EA-8978-3C1522BB52F3}</SSIS:Property>
                 <SSIS:Property SSIS:Name="PackageFormatVersion">8</SSIS:Property>
                 <SSIS:Property SSIS:Name="Description">
                 </SSIS:Property>
