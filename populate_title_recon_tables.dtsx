@@ -11,8 +11,8 @@
   DTS:LocaleID="2057"
   DTS:ObjectName="Package"
   DTS:PackageType="5"
-  DTS:VersionBuild="7"
-  DTS:VersionGUID="{BE9CD012-3EEF-437E-8F59-3B0D3F14ED5A}">
+  DTS:VersionBuild="11"
+  DTS:VersionGUID="{F33A77E1-535B-41AC-A8DA-212093F1E4F1}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -99,7 +99,8 @@ SELECT dim.*
 SELECT tit.run_id
      , tit.ISBN_SuppEd
      , tit.ISBN
-	 , tit.author AS src_Author
+	 --, tit.author AS src_Author
+	 , CAST(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(tit.author,'&amp;amp;','&amp;'),'&amp;apos;',''''),'&amp;gt;','&gt;'),'&amp;lt;','&lt;'),'&amp;quot;','"') AS VARCHAR(500)) AS [src_author]
 	 , tit.finance_imprint
 	 , tit.finance_publisher
 	 , tit.commodity_code
@@ -144,7 +145,7 @@ SELECT tit.run_id
      , ldsm.[Last Updated Date]
   FROM [transform].[title_load_results] ldsm
   JOIN [final].[titles] tit ON ldsm.event_prtnum = tit.ISBN_SuppEd
- WHERE ldsm.[Download Sequence] IN (109725,109726) AND errors = '' AND ldsm.[Item Number] &lt;&gt; '9780241573372-UKS00201'
+ WHERE ldsm.[Download Sequence] IN (21,23,22,24,25) --AND errors = '' AND ldsm.[Item Number] &lt;&gt; '9780241573372-UKS00201'
  ) dim
  ) ilv</property>
                     <property
@@ -267,17 +268,6 @@ SELECT tit.run_id
                           length="50"
                           lineageId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].Columns[ISBN]"
                           name="ISBN"
-                          truncationRowDisposition="FailComponent" />
-                        <outputColumn
-                          refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].Columns[src_Author]"
-                          codePage="1252"
-                          dataType="str"
-                          errorOrTruncationOperation="Conversion"
-                          errorRowDisposition="FailComponent"
-                          externalMetadataColumnId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].ExternalColumns[src_Author]"
-                          length="500"
-                          lineageId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].Columns[src_Author]"
-                          name="src_Author"
                           truncationRowDisposition="FailComponent" />
                         <outputColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].Columns[finance_imprint]"
@@ -686,6 +676,17 @@ SELECT tit.run_id
                           lineageId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].Columns[title_attributes_match_result]"
                           name="title_attributes_match_result"
                           truncationRowDisposition="FailComponent" />
+                        <outputColumn
+                          refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].Columns[src_author]"
+                          codePage="1252"
+                          dataType="str"
+                          errorOrTruncationOperation="Conversion"
+                          errorRowDisposition="FailComponent"
+                          externalMetadataColumnId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].ExternalColumns[src_author]"
+                          length="500"
+                          lineageId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].Columns[src_author]"
+                          name="src_author"
+                          truncationRowDisposition="FailComponent" />
                       </outputColumns>
                       <externalMetadataColumns
                         isUsed="True">
@@ -735,12 +736,6 @@ SELECT tit.run_id
                           dataType="str"
                           length="50"
                           name="ISBN" />
-                        <externalMetadataColumn
-                          refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].ExternalColumns[src_Author]"
-                          codePage="1252"
-                          dataType="str"
-                          length="500"
-                          name="src_Author" />
                         <externalMetadataColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].ExternalColumns[finance_imprint]"
                           codePage="1252"
@@ -953,6 +948,12 @@ SELECT tit.run_id
                           dataType="str"
                           length="6"
                           name="title_attributes_match_result" />
+                        <externalMetadataColumn
+                          refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].ExternalColumns[src_author]"
+                          codePage="1252"
+                          dataType="str"
+                          length="500"
+                          name="src_author" />
                       </externalMetadataColumns>
                     </output>
                     <output
@@ -980,12 +981,12 @@ SELECT tit.run_id
                           lineageId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[ISBN]"
                           name="ISBN" />
                         <outputColumn
-                          refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[src_Author]"
+                          refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[src_author]"
                           codePage="1252"
                           dataType="str"
                           length="500"
-                          lineageId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[src_Author]"
-                          name="src_Author" />
+                          lineageId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[src_author]"
+                          name="src_author" />
                         <outputColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[finance_imprint]"
                           codePage="1252"
@@ -1424,13 +1425,13 @@ SELECT tit.run_id
                           externalMetadataColumnId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\reconcile_title_attributes.Inputs[OLE DB Destination Input].ExternalColumns[ISBN]"
                           lineageId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].Columns[ISBN]" />
                         <inputColumn
-                          refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\reconcile_title_attributes.Inputs[OLE DB Destination Input].Columns[src_Author]"
+                          refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\reconcile_title_attributes.Inputs[OLE DB Destination Input].Columns[src_author]"
                           cachedCodepage="1252"
                           cachedDataType="str"
                           cachedLength="500"
-                          cachedName="src_Author"
+                          cachedName="src_author"
                           externalMetadataColumnId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\reconcile_title_attributes.Inputs[OLE DB Destination Input].ExternalColumns[src_Author]"
-                          lineageId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].Columns[src_Author]" />
+                          lineageId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data.Outputs[OLE DB Source Output].Columns[src_author]" />
                         <inputColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\reconcile_title_attributes.Inputs[OLE DB Destination Input].Columns[finance_imprint]"
                           cachedCodepage="1252"
@@ -2136,9 +2137,9 @@ SELECT tit.run_id
      --, CASE WHEN ldsm.[Event Status] = 'Event Sent' THEN 'SUCCESS' ELSE 'ERROR' END AS bydata_load_status
   FROM [transform].[title_load_results] ldsm
    JOIN [final].[titles] tit ON ldsm.event_prtnum = tit.ISBN_SuppEd
- WHERE ldsm.[Download Sequence] IN (109725,109726) AND errors = '' AND ldsm.[Item Number] &lt;&gt; '9780241573372-UKS00201'
+ WHERE ldsm.[Download Sequence] IN (21,23,22,24,25) --AND errors = '' --AND ldsm.[Item Number] &lt;&gt; '9780241573372-UKS00201'
  ) dim
- ) ilv</property>
+ ) ilv;</property>
                     <property
                       dataType="System.String"
                       description="The variable that contains the SQL command to be executed."
@@ -3925,7 +3926,7 @@ SELECT tit.run_id
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="Truncate title attributes"
-          DTS:ThreadHint="1">
+          DTS:ThreadHint="0">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
@@ -3941,7 +3942,7 @@ SELECT tit.run_id
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="Truncate title dimensions"
-          DTS:ThreadHint="0">
+          DTS:ThreadHint="1">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
@@ -3983,19 +3984,19 @@ SELECT tit.run_id
       <GraphLayout
         Capacity="8" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="257,42"
+          Size="257.333333333334,42"
           Id="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data"
           TopLeft="332.5,114" />
         <NodeLayout
-          Size="271,44"
+          Size="270.666666666667,44"
           Id="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data"
           TopLeft="330,37" />
         <NodeLayout
-          Size="191,42"
+          Size="190.666666666667,42"
           Id="Package\Populate Title Recon Tables\Truncate title attributes"
           TopLeft="12,116" />
         <NodeLayout
-          Size="201,42"
+          Size="201.333333333334,42"
           Id="Package\Populate Title Recon Tables\Truncate title dimensions"
           TopLeft="5.5,37" />
         <EdgeLayout
@@ -4046,7 +4047,7 @@ SELECT tit.run_id
           HeaderHeight="43"
           IsExpanded="True"
           PanelSize="684,320"
-          Size="684,363"
+          Size="684,362.666666666667"
           Id="Package\Populate Title Recon Tables"
           TopLeft="141,42" />
       </GraphLayout>
@@ -4117,13 +4118,13 @@ SELECT tit.run_id
       <GraphLayout
         Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="166,42"
-          Id="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data"
-          TopLeft="106,79" />
-        <NodeLayout
           Size="208,42"
           Id="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\reconcile_title_dimensions"
           TopLeft="507,79" />
+        <NodeLayout
+          Size="166,42"
+          Id="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data"
+          TopLeft="106,79" />
         <EdgeLayout
           Id="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data.Paths[OLE DB Source Output]"
           TopLeft="272,100">
