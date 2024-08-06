@@ -11,8 +11,8 @@
   DTS:LocaleID="2057"
   DTS:ObjectName="Package"
   DTS:PackageType="5"
-  DTS:VersionBuild="21"
-  DTS:VersionGUID="{83090822-B23E-43DD-9EA7-DB1AD3BE9375}">
+  DTS:VersionBuild="31"
+  DTS:VersionGUID="{65761446-33A8-4F4A-A058-4C0A20822BCD}">
   <DTS:Property
     DTS:Name="PackageFormatVersion">8</DTS:Property>
   <DTS:Variables />
@@ -21,6 +21,7 @@
       DTS:refId="Package\Populate Title Recon Tables"
       DTS:CreationName="STOCK:SEQUENCE"
       DTS:Description="Sequence Container"
+      DTS:Disabled="True"
       DTS:DTSID="{49EF6797-C572-4BFC-97CA-CAB4DDCACB8B}"
       DTS:ExecutableType="STOCK:SEQUENCE"
       DTS:LocaleID="-1"
@@ -93,7 +94,7 @@ SELECT dim.*
      ,CASE WHEN dim.[answer_code] = dim.Size THEN 1 ELSE 0 END AS answercode_match
      --,CASE WHEN dim.country_of_origin = dim.[Item Family] THEN 1 ELSE 0 END AS country_match
      --,CASE WHEN dim.commodity_code2 = dim. THEN 1 ELSE 0 END AS commoditycode2_match
-     ,CASE WHEN dim.longdsc = dim.ftp_lngdsc AND dim.longdsc = dim.Description THEN 1 ELSE 0 END AS longdsc_match
+     ,CASE WHEN /*dim.longdsc = dim.ftp_lngdsc AND */dim.longdsc = dim.Description THEN 1 ELSE 0 END AS longdsc_match
      --,CASE WHEN dim.PackSize = dim.[Item Family] THEN 1 ELSE 0 END AS packsize_match
   FROM (
 SELECT tit.run_id
@@ -2124,10 +2125,10 @@ SELECT tit.run_id
 	 , CAST(tit.PackHeight AS FLOAT) AS cs_hgt
 	 , CAST(tit.PackWeight AS FLOAT) AS cs_wgt
 	 , CAST(tit.PackSize AS FLOAT) AS untqty
-	 , 0 AS pa_len
-	 , 0 AS pa_wid
-	 , 0 AS pa_hgt
-	 , 0 AS pa_wgt
+	 , CAST(tit.PalletDepth AS FLOAT) AS pa_len
+	 , CAST(tit.PalletWidth AS FLOAT) AS pa_wid
+	 , CAST(tit.PalletHeight AS FLOAT) AS pa_hgt
+	 , CAST(tit.PalletWeight AS FLOAT) AS pa_wgt
      , ldsm.[Item Number]
      , CAST(ldsm.[each_len] AS FLOAT)      AS [each_len]
      , CAST(ldsm.[each_wid] AS FLOAT)	   AS [each_wid]
@@ -2728,19 +2729,19 @@ SELECT tit.run_id
                           name="untqty" />
                         <externalMetadataColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Output].ExternalColumns[pa_len]"
-                          dataType="i4"
+                          dataType="r8"
                           name="pa_len" />
                         <externalMetadataColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Output].ExternalColumns[pa_wid]"
-                          dataType="i4"
+                          dataType="r8"
                           name="pa_wid" />
                         <externalMetadataColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Output].ExternalColumns[pa_hgt]"
-                          dataType="i4"
+                          dataType="r8"
                           name="pa_hgt" />
                         <externalMetadataColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Output].ExternalColumns[pa_wgt]"
-                          dataType="i4"
+                          dataType="r8"
                           name="pa_wgt" />
                         <externalMetadataColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Output].ExternalColumns[Item Number]"
@@ -2958,22 +2959,22 @@ SELECT tit.run_id
                           name="untqty" />
                         <outputColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[pa_len]"
-                          dataType="i4"
+                          dataType="r8"
                           lineageId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[pa_len]"
                           name="pa_len" />
                         <outputColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[pa_wid]"
-                          dataType="i4"
+                          dataType="r8"
                           lineageId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[pa_wid]"
                           name="pa_wid" />
                         <outputColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[pa_hgt]"
-                          dataType="i4"
+                          dataType="r8"
                           lineageId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[pa_hgt]"
                           name="pa_hgt" />
                         <outputColumn
                           refId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[pa_wgt]"
-                          dataType="i4"
+                          dataType="r8"
                           lineageId="Package\Populate Title Recon Tables\Populate Title Dimensions Recon Data\Read Recon Data.Outputs[OLE DB Source Error Output].Columns[pa_wgt]"
                           name="pa_wgt" />
                         <outputColumn
@@ -3934,7 +3935,7 @@ UNION
 select run_id, 'SAP Records failing Requirement Criteria' AS Description, COUNT(1) AS record_count 
   FROM source.sap_titles_not_meeting_requirements nmeet
  WHERE nmeet.not_meeting_requirements = 0
- GROUP BY run_id;</property>
+ GROUP BY run_id</property>
                     <property
                       dataType="System.String"
                       description="The variable that contains the SQL command to be executed."
@@ -7291,7 +7292,7 @@ SELECT src.*
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="titles_sourcerecord_filter_summary"
-          DTS:ThreadHint="2">
+          DTS:ThreadHint="3">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
@@ -7307,7 +7308,7 @@ SELECT src.*
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="titles_src_transformation_check_results"
-          DTS:ThreadHint="3">
+          DTS:ThreadHint="4">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
@@ -7323,7 +7324,7 @@ SELECT src.*
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="Truncate title attributes"
-          DTS:ThreadHint="0">
+          DTS:ThreadHint="1">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
@@ -7339,7 +7340,7 @@ SELECT src.*
           DTS:ExecutableType="Microsoft.ExecuteSQLTask"
           DTS:LocaleID="-1"
           DTS:ObjectName="Truncate title dimensions"
-          DTS:ThreadHint="1">
+          DTS:ThreadHint="2">
           <DTS:Variables />
           <DTS:ObjectData>
             <SQLTask:SqlTaskData
@@ -7383,6 +7384,108 @@ SELECT src.*
           DTS:To="Package\Populate Title Recon Tables\Populate titles_src_transformation_check_results" />
       </DTS:PrecedenceConstraints>
     </DTS:Executable>
+    <DTS:Executable
+      DTS:refId="Package\Populate Title Recon Tables New"
+      DTS:CreationName="STOCK:SEQUENCE"
+      DTS:Description="Sequence Container"
+      DTS:DTSID="{878C17D9-F0F1-431C-9338-57A52B01B5BB}"
+      DTS:ExecutableType="STOCK:SEQUENCE"
+      DTS:LocaleID="-1"
+      DTS:ObjectName="Populate Title Recon Tables New">
+      <DTS:Variables />
+      <DTS:Executables>
+        <DTS:Executable
+          DTS:refId="Package\Populate Title Recon Tables New\Populate Title Attributes recon"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{3E5C36FA-092A-44E1-8B7A-E11067123D34}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Populate Title Attributes recon"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{DA29E0B6-8531-4EA2-A25E-66DEA44DD2EE}"
+              SQLTask:SqlStatementSource="DROP TABLE IF EXISTS ReconDB.dbo.reconcile_title_attributes;&#xA;GO&#xA;SELECT * INTO ReconDB.dbo.reconcile_title_attributes&#xA; FROM (&#xA;SELECT ilv.*&#xA;      ,CASE WHEN ilv.ISBN_SuppEd_match = 1 &#xA;&#x9;         AND ilv.ISBN_match = 1&#xA;&#x9;&#x9;&#x9; AND ilv.Author_match = 1&#xA;&#x9;&#x9;&#x9; AND ilv.finance_imprint_match = 1&#xA;&#x9;&#x9;&#x9; AND ilv.finance_publisher_match = 1&#xA;&#x9;&#x9;&#x9; AND ilv.commoditycode_match = 1&#xA;&#x9;&#x9;&#x9; AND ilv.binding_match = 1&#xA;&#x9;&#x9;&#x9; AND ilv.publicationprice_match = 1&#xA;&#x9;&#x9;&#x9; AND ilv.answercode_match = 1&#xA;&#x9;&#x9;&#x9; AND ilv.longdsc_match = 1 THEN 'Passed' ELSE 'Failed' END AS title_attributes_match_result&#xA;  FROM (&#xA;SELECT dim.*&#xA;     ,CASE WHEN dim.ISBN_SuppEd = dim.[Item Hierarchy] &#xA;&#x9;        /*AND dim.ISBN_SuppEd = dim.[Item Number]*/ THEN 1 ELSE 0 END AS ISBN_SuppEd_match&#xA;     ,CASE WHEN /*dim.ISBN = dim.[Alternate Item Number] &#xA;&#x9;        AND*/ dim.ISBN = dim.[Footprint Code] THEN 1 ELSE 0 END AS ISBN_match&#xA;     ,CASE WHEN dim.src_Author = dim.Author THEN 1 ELSE 0 END AS Author_match&#xA;     ,CASE WHEN dim.finance_imprint = dim.Imprint THEN 1 ELSE 0 END AS finance_imprint_match&#xA;     ,CASE WHEN dim.finance_publisher = dim.Publisher THEN 1 ELSE 0 END AS finance_publisher_match&#xA;     ,CASE WHEN dim.commodity_code = dim.[Commodity Code] THEN 1 ELSE 0 END AS commoditycode_match&#xA;     ,CASE WHEN dim.[Binding] = dim.[Item Family] THEN 1 ELSE 0 END AS binding_match&#xA;     --,CASE WHEN dim.[se_publication_date] = dim.Size THEN 1 ELSE 0 END AS publicationdate_match&#xA;     ,CASE WHEN CAST(dim.[se_publication_price] AS FLOAT) = CAST(dim.[Unit Cost] AS FLOAT) THEN 1 ELSE 0 END AS publicationprice_match&#xA;     ,CASE WHEN dim.[answer_code] = dim.Size THEN 1 ELSE 0 END AS answercode_match&#xA;     --,CASE WHEN dim.country_of_origin = dim.[Item Family] THEN 1 ELSE 0 END AS country_match&#xA;     --,CASE WHEN dim.commodity_code2 = dim. THEN 1 ELSE 0 END AS commoditycode2_match&#xA;     ,CASE WHEN /*dim.longdsc = dim.ftp_lngdsc AND */dim.longdsc = dim.Description THEN 1 ELSE 0 END AS longdsc_match&#xA;     --,CASE WHEN dim.PackSize = dim.[Item Family] THEN 1 ELSE 0 END AS packsize_match&#xA;  FROM (&#xA;SELECT tit.run_id&#xA;     , tit.ISBN_SuppEd&#xA;     , tit.ISBN&#xA;&#x9; --, tit.author AS src_Author&#xA;&#x9; , CAST(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(tit.author,'&amp;amp;','&amp;'),'&amp;apos;',''''),'&amp;gt;','&gt;'),'&amp;lt;','&lt;'),'&amp;quot;','&quot;') AS VARCHAR(500)) AS [src_author]&#xA;&#x9; , tit.finance_imprint&#xA;&#x9; , tit.finance_publisher&#xA;&#x9; , tit.commodity_code&#xA;&#x9; , tit.[Binding]&#xA;&#x9; , tit.se_publication_date&#xA;&#x9; , tit.se_publication_price&#xA;&#x9; , tit.answer_code&#xA;&#x9; , tit.country_of_origin&#xA;&#x9; , tit.[commodity_code2]&#xA;&#x9; --, tit.title_long_desc AS longdsc&#xA;&#x9; , REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(tit.title_long_desc,'&amp;amp;','&amp;'),'&amp;apos;',''''),'&amp;gt;','&gt;'),'&amp;lt;','&lt;'),'&amp;quot;','&quot;') AS longdsc&#xA;&#x9; , SUBSTRING(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(tit.title_long_desc,'&amp;amp;','&amp;'),'&amp;apos;',''''),'&amp;gt;','&gt;'),'&amp;lt;','&lt;'),'&amp;quot;','&quot;'),1,20) AS shortdsc&#xA;&#x9; --, CASE WHEN CHARINDEX('''',SUBSTRING(tit.title_long_desc,1,20)) &gt; 0&#xA;&#x9; --         OR CHARINDEX('&amp;',SUBSTRING(tit.title_long_desc,1,20)) &gt; 0&#xA;&#x9; --         OR CHARINDEX('&quot;',SUBSTRING(tit.title_long_desc,1,20)) &gt; 0&#xA;&#x9; --         OR CHARINDEX('&gt;',SUBSTRING(tit.title_long_desc,1,20)) &gt; 0&#xA;&#x9; --         OR CHARINDEX('&lt;',SUBSTRING(tit.title_long_desc,1,20)) &gt; 0&#xA;&#x9;&#x9;--&#x9;THEN REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(SUBSTRING(tit.title_long_desc,1,20),'&amp;','&amp;amp;'),'''','&amp;apos;'),'&gt;','&amp;gt;'),'&lt;','&amp;lt;'),'&quot;','&amp;quot;')&#xA;&#x9;&#x9;--&#x9;ELSE SUBSTRING(REPLACE(REPLACE(REPLACE(REPLACE(REPLACE(tit.title_long_desc,'&amp;','&amp;amp;'),'''','&amp;apos;'),'&gt;','&amp;gt;'),'&lt;','&amp;lt;'),'&quot;','&amp;quot;'),1,20) &#xA;&#x9;&#x9;--&#x9; END AS shortdsc&#xA;&#x9; , tit.PackSize&#xA;     , ldsm.[Author]&#xA;     , ldsm.[Imprint]&#xA;     , ldsm.[Publisher]&#xA;     , ldsm.[Item Number]&#xA;     , ldsm.[Commodity Code]&#xA;     , ldsm.[Item Family]&#xA;     , ldsm.[Unit Cost]&#xA;     , ldsm.[Receive Status]&#xA;     , ldsm.[Size]&#xA;     , ldsm.[Currency Code]&#xA;     , ldsm.[Display Item Number]&#xA;     , ldsm.[Item Hierarchy]&#xA;     , ldsm.[Description]&#xA;     , ldsm.[Alternate Item Type]&#xA;     , ldsm.[Alternate Item Number]&#xA;     , ldsm.[Footprint Code]&#xA;     , ldsm.[ftp_lngdsc]&#xA;     , ldsm.[errors]&#xA;     , ldsm.[Event Status]&#xA;     , ldsm.[Download Sequence]&#xA;     , ldsm.[Last Updated Date]&#xA;  FROM [transform].[title_load_results] ldsm&#xA;  LEFT JOIN [final].[titles] tit ON ldsm.event_prtnum = tit.ISBN_SuppEd&#xA; --WHERE ldsm.[Download Sequence] IN (21,23,22,24,25) --AND errors = '' AND ldsm.[Item Number] &lt;&gt; '9780241573372-UKS00201'&#xA; ) dim&#xA; ) ilv&#xA; ) ilv2&#xA;&#xA;GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Populate Title Recon Tables New\Populate Title Dimension recon"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{95C180E1-3118-49C4-BFDC-BAA03D7EDFCB}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Populate Title Dimension recon"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{DA29E0B6-8531-4EA2-A25E-66DEA44DD2EE}"
+              SQLTask:SqlStatementSource="DROP TABLE IF EXISTS ReconDB.dbo.reconcile_title_dimensions;&#xA;GO&#xA;SELECT * INTO ReconDB.dbo.reconcile_title_dimensions&#xA;  FROM (&#xA;SELECT ilv.*&#xA;      ,CASE WHEN each_len_match = 1 AND&#xA;&#x9;&#x9;&#x9;&#x9; each_wid_match = 1 AND&#xA;&#x9;&#x9;&#x9;&#x9; each_hgt_match = 1 AND&#xA;&#x9;&#x9;&#x9;&#x9; each_wgt_match = 1 AND&#xA;                 case_len_match = 1 AND&#xA;&#x9;&#x9;&#x9;&#x9; case_wid_match = 1 AND&#xA;&#x9;&#x9;&#x9;&#x9; case_hgt_match = 1 AND&#xA;&#x9;&#x9;&#x9;&#x9; case_wgt_match = 1 AND&#xA;                 pallet_len_match = 1 AND&#xA;&#x9;&#x9;&#x9;&#x9; pallet_wid_match = 1 AND&#xA;&#x9;&#x9;&#x9;&#x9; pallet_hgt_match = 1 AND&#xA;&#x9;&#x9;&#x9;&#x9; pallet_wgt_match = 1 THEN 'Passed' ELSE 'Failed' END AS all_title_dimensions_matched&#xA;  FROM (&#xA;SELECT dim.*&#xA;      --,CASE WHEN dim.len = dim.each_len THEN 1 ELSE 0 END AS each_len_match&#xA;      --,CASE WHEN dim.wid = dim.each_wid THEN 1 ELSE 0 END AS each_wid_match&#xA;      --,CASE WHEN dim.hgt = dim.each_hgt THEN 1 ELSE 0 END AS each_hgt_match&#xA;      --,CASE WHEN dim.wgt = dim.each_netwgt &#xA;&#x9;     -- AND dim.wgt = dim.each_grswgt THEN 1 ELSE 0 END AS each_wgt_match&#xA;      --,CASE WHEN dim.cs_len = dim.case_len THEN 1 ELSE 0 END AS case_len_match&#xA;      --,CASE WHEN dim.cs_wid = dim.case_wid THEN 1 ELSE 0 END AS case_wid_match&#xA;      --,CASE WHEN dim.cs_hgt = dim.case_hgt THEN 1 ELSE 0 END AS case_hgt_match&#xA;      --,CASE WHEN dim.cs_wgt = dim.case_netwgt &#xA;&#x9;     -- AND dim.cs_wgt = dim.case_grswgt THEN 1 ELSE 0 END AS case_wgt_match&#xA;      --,CASE WHEN dim.pa_len = dim.pallet_len THEN 1 ELSE 0 END AS pallet_len_match&#xA;      --,CASE WHEN dim.pa_wid = dim.pallet_wid THEN 1 ELSE 0 END AS pallet_wid_match&#xA;      --,CASE WHEN dim.pa_hgt = dim.pallet_hgt THEN 1 ELSE 0 END AS pallet_hgt_match&#xA;      --,CASE WHEN dim.pa_wgt = dim.pallet_netwgt &#xA;&#x9;     -- AND dim.cs_wgt = dim.case_grswgt THEN 1 ELSE 0 END AS pallet_wgt_match&#xA;      ,CASE WHEN dim.hgt = dim.each_len THEN 1 ELSE 0 END AS each_len_match&#xA;      ,CASE WHEN dim.wid = dim.each_wid THEN 1 ELSE 0 END AS each_wid_match&#xA;      ,CASE WHEN dim.[len] = dim.each_hgt THEN 1 ELSE 0 END AS each_hgt_match&#xA;      ,CASE WHEN dim.wgt = dim.each_netwgt &#xA;&#x9;      AND dim.wgt = dim.each_grswgt THEN 1 ELSE 0 END AS each_wgt_match&#xA;      ,CASE WHEN dim.cs_hgt = dim.case_len THEN 1 ELSE 0 END AS case_len_match&#xA;      ,CASE WHEN dim.cs_wid = dim.case_wid THEN 1 ELSE 0 END AS case_wid_match&#xA;      ,CASE WHEN dim.cs_len = dim.case_hgt THEN 1 ELSE 0 END AS case_hgt_match&#xA;      ,CASE WHEN dim.cs_wgt = dim.case_netwgt &#xA;&#x9;      AND dim.cs_wgt = dim.case_grswgt THEN 1 ELSE 0 END AS case_wgt_match&#xA;      ,CASE WHEN dim.pa_hgt = dim.pallet_len THEN 1 ELSE 0 END AS pallet_len_match&#xA;      ,CASE WHEN dim.pa_wid = dim.pallet_wid THEN 1 ELSE 0 END AS pallet_wid_match&#xA;      ,CASE WHEN dim.pa_len = dim.pallet_hgt THEN 1 ELSE 0 END AS pallet_hgt_match&#xA;      ,CASE WHEN dim.pa_wgt = dim.pallet_netwgt &#xA;&#x9;      AND dim.cs_wgt = dim.case_grswgt THEN 1 ELSE 0 END AS pallet_wgt_match&#xA;  FROM (&#xA;SELECT tit.run_id&#xA;     , tit.ISBN_SuppEd&#xA;&#x9; , CAST(tit.BookDepth AS FLOAT) AS [len]&#xA;&#x9; , CAST(tit.BookWidth AS FLOAT) AS wid&#xA;&#x9; , CAST(tit.BookHeight AS FLOAT) AS hgt&#xA;&#x9; , CAST(tit.BookWeight AS FLOAT) AS wgt&#xA;&#x9; , CAST(tit.PackDepth AS FLOAT) AS cs_len&#xA;&#x9; , CAST(tit.PackWidth AS FLOAT) AS cs_wid&#xA;&#x9; , CAST(tit.PackHeight AS FLOAT) AS cs_hgt&#xA;&#x9; , CAST(tit.PackWeight AS FLOAT) AS cs_wgt&#xA;&#x9; , CAST(tit.PackSize AS FLOAT) AS untqty&#xA;&#x9; , CAST(tit.PalletDepth AS FLOAT) AS pa_len&#xA;&#x9; , CAST(tit.PalletWidth AS FLOAT) AS pa_wid&#xA;&#x9; , CAST(tit.PalletHeight AS FLOAT) AS pa_hgt&#xA;&#x9; , CAST(tit.PalletWeight AS FLOAT) AS pa_wgt&#xA;     , ldsm.[Item Number]&#xA;     , CAST(ldsm.[each_len] AS FLOAT)      AS [each_len]&#xA;     , CAST(ldsm.[each_wid] AS FLOAT)&#x9;   AS [each_wid]&#xA;     , CAST(ldsm.[each_hgt] AS FLOAT)&#x9;   AS [each_hgt]&#xA;     , CAST(ldsm.[each_grswgt] AS FLOAT)   AS [each_grswgt]&#xA;     , CAST(ldsm.[each_netwgt] AS FLOAT)   AS [each_netwgt]&#xA;     , CAST(ldsm.[case_len] AS FLOAT)&#x9;   AS [case_len]&#xA;     , CAST(ldsm.[case_wid] AS FLOAT)&#x9;   AS [case_wid]&#xA;     , CAST(ldsm.[case_hgt] AS FLOAT)&#x9;   AS [case_hgt]&#xA;     , CAST(ldsm.[case_grswgt] AS FLOAT)   AS [case_grswgt]&#xA;     , CAST(ldsm.[case_netwgt] AS FLOAT)   AS [case_netwgt]&#xA;     , CAST(ldsm.[pallet_len] AS FLOAT)&#x9;   AS [pallet_len]&#xA;     , CAST(ldsm.[pallet_wid] AS FLOAT)&#x9;   AS [pallet_wid]&#xA;     , CAST(ldsm.[pallet_hgt] AS FLOAT)&#x9;   AS [pallet_hgt]&#xA;     , CAST(ldsm.[pallet_grswgt] AS FLOAT) AS [pallet_grswgt] &#xA;     , CAST(ldsm.[pallet_netwgt] AS FLOAT) AS [pallet_netwgt]&#xA;     , ldsm.[errors]&#xA;     , ldsm.[dwnld_info]&#xA;     , ldsm.[Event Status]&#xA;     , ldsm.[Download Sequence]&#xA;     , ldsm.[Last Updated Date]&#xA;     --, CASE WHEN ldsm.[Event Status] = 'Event Sent' THEN 'SUCCESS' ELSE 'ERROR' END AS bydata_load_status&#xA;  FROM [transform].[title_load_results] ldsm&#xA;   LEFT JOIN [final].[titles] tit ON ldsm.[ISBN - Supply Edition] = tit.ISBN_SuppEd&#xA;-- WHERE ldsm.[Download Sequence] IN (21,23,22,24,25) --AND errors = '' --AND ldsm.[Item Number] &lt;&gt; '9780241573372-UKS00201'&#xA; ) dim&#xA; ) ilv&#xA; ) ilv2;&#xA;&#xA; GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Populate Title Recon Tables New\Populate titles_sourcerecord_filter_summary"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{2265960B-D46B-4370-9369-ED0077C5875A}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Populate titles_sourcerecord_filter_summary"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{DA29E0B6-8531-4EA2-A25E-66DEA44DD2EE}"
+              SQLTask:SqlStatementSource="DROP TABLE IF EXISTS ReconDB.dbo.titles_sourcerecord_filter_results;&#xA;GO&#xA;SELECT * INTO ReconDB.dbo.titles_sourcerecord_filter_results&#xA; FROM (&#xA;SELECT run_id, 'SAP Records from Extract' AS Description, COUNT(1) AS record_count &#xA;  FROM source.sap_titles&#xA; GROUP BY run_id&#xA;UNION&#xA;SELECT run_id, 'SAP Records successfully passing all Requirement Criteria' AS Description, COUNT(1) AS record_count &#xA;  FROM source.sap_titles src&#xA; WHERE src.[DM001_Check] = 1&#xA;   AND src.[DM002_Check] = 1&#xA;   --AND src.[DM003_Check] = 1&#xA;   AND src.[DM004_Check] = 1&#xA;   --AND src.[DM005_Check] = 1&#xA;   AND src.[DM006_Check] = 1&#xA;   AND src.[DM007_Check] = 1&#xA;   AND src.[DM008_Check] = 1&#xA;   AND src.[DM009_Check] = 1&#xA;   AND src.[DM010_Check] = 1&#xA;   AND src.[DM011_Check] = 1&#xA; GROUP BY run_id&#xA;UNION&#xA;select run_id, 'SAP Records failing Requirement Criteria' AS Description, COUNT(1) AS record_count &#xA;  FROM source.sap_titles_not_meeting_requirements nmeet&#xA; WHERE nmeet.not_meeting_requirements = 0&#xA; GROUP BY run_id&#xA; ) ilv2&#xA; GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+        <DTS:Executable
+          DTS:refId="Package\Populate Title Recon Tables New\Populate titles_src_transformation_check_results"
+          DTS:CreationName="Microsoft.ExecuteSQLTask"
+          DTS:Description="Execute SQL Task"
+          DTS:DTSID="{5FA3757C-D981-43AC-A3FC-0160C9982A4B}"
+          DTS:ExecutableType="Microsoft.ExecuteSQLTask"
+          DTS:LocaleID="-1"
+          DTS:ObjectName="Populate titles_src_transformation_check_results"
+          DTS:ThreadHint="0">
+          <DTS:Variables />
+          <DTS:ObjectData>
+            <SQLTask:SqlTaskData
+              SQLTask:Connection="{DA29E0B6-8531-4EA2-A25E-66DEA44DD2EE}"
+              SQLTask:SqlStatementSource="DROP TABLE IF EXISTS ReconDB.dbo.titles_src_transformation_check_results;&#xA;GO&#xA;&#xA;WITH src_titles AS (&#xA;SELECT src.run_id&#xA;      ,src.[ISBN] AS src_ISBN&#xA;      ,src.[Created On] AS src_createdon&#xA;      ,src.[Plant] AS src_plant&#xA;      ,src.[Storage Location] AS src_storagelocation&#xA;      ,src.[Supply Edition] AS src_supplyEdition&#xA;      ,src.[Answer Code for Reqs] AS src_AnswerCode&#xA;      ,src.[Answer Code Text] AS src_AnswerCodeDesc&#xA;      ,src.[ISBN Name] AS src_ISBNName&#xA;      ,src.[Original Pub Date of Product] AS src_OriginalPubDate&#xA;      ,src.[Comm  imp  code no ] AS src_commoditycode&#xA;      ,src.[Commodity code 2] AS src_commoditycode2&#xA;      ,src.[SE publication date] AS src_sepublicationdate&#xA;      ,src.[SE publication price] AS src_sepublicationprice&#xA;      ,src.[Author Artist] AS src_authorartist&#xA;      ,src.[Finance publisher] AS src_financepublisher&#xA;      ,src.[Finance publisher description] AS src_financepublisherdesc&#xA;      ,src.[Finance Imprint] AS src_financeimprint&#xA;      ,src.[Finance imprint description] AS src_financeimprintdesc&#xA;      ,src.[Export Pub Date of Product] AS src_exportpubdate&#xA;      ,src.[Binding] AS src_binding&#xA;      ,src.[Binding Description] AS src_bindingdesc&#xA;      ,src.[Country of origin] AS src_countryoforigin&#xA;  FROM source.sap_titles src&#xA; WHERE src.[DM001_Check] = 1&#xA;   AND src.[DM002_Check] = 1&#xA;   --AND src.[DM003_Check] = 1&#xA;   AND src.[DM004_Check] = 1&#xA;   --AND src.[DM005_Check] = 1&#xA;   AND src.[DM006_Check] = 1&#xA;   AND src.[DM007_Check] = 1&#xA;   AND src.[DM008_Check] = 1&#xA;   AND src.[DM009_Check] = 1&#xA;   AND src.[DM010_Check] = 1&#xA;   AND src.[DM011_Check] = 1&#xA;)&#xA;,tx_titles as (&#xA;SELECT tx.[ISBN] AS tx_ISBN &#xA;      ,tx.[title_long_desc] AS tx_ISBNName&#xA;      ,tx.[author] AS tx_author&#xA;      ,tx.[Created On] AS tx_createdon&#xA;      ,tx.[Plant] AS tx_plant&#xA;      ,tx.[Storage Location] AS tx_storagelocation&#xA;      ,tx.[Supply Edition] AS tx_SupplyEd&#xA;      ,tx.[answer_code] AS tx_AnswerCode&#xA;      ,tx.[Answer Code Text] AS tx_AnswerCodeDesc&#xA;      ,tx.[commodity_code] AS tx_commoditycode&#xA;      ,tx.[commodity_code2] AS tx_commoditycode2&#xA;      ,tx.[Original Pub Date of Product] AS tx_originalpubdate&#xA;      ,tx.[finance_publisher] AS tx_financepublisher&#xA;      ,tx.[Finance publisher description] AS tx_financepublisherdesc&#xA;      ,tx.[finance_imprint] AS tx_financeimprint&#xA;      ,tx.[Finance imprint description] AS tx_financeimprintdesc&#xA;      ,tx.[Export Pub Date of Product] AS tx_exportpubdate&#xA;      ,tx.[Binding] AS tx_binding&#xA;      ,tx.[Binding Description] AS tx_bindingdesc&#xA;      ,tx.[ISBN_SuppEd] &#xA;      ,tx.[se_publication_date] AS tx_sepublicationdate&#xA;      ,tx.[se_publication_price] AS tx_sepublicationprice&#xA;      ,tx.[country_of_origin] AS tx_countryoforigin&#xA;      ,tx.[PackFlag] AS tx_packflag&#xA;      ,tx.[PackHeight] AS tx_packheight&#xA;      ,tx.[PackWeight] AS tx_packweight&#xA;      ,tx.[PackWidth] AS tx_packwidth&#xA;      ,tx.[PackDepth] AS tx_packdepth&#xA;      ,tx.[PackagingType] AS tx_packagingtype&#xA;      ,tx.[PickPackMethod] AS tx_pickpackmethod&#xA;      ,tx.[BookHeight] AS tx_bookheight&#xA;      ,tx.[BookWeight] AS tx_bookweight&#xA;      ,tx.[BookWidth] AS tx_bookwidth&#xA;      ,tx.[BookDepth] AS tx_bookdepth&#xA;      ,tx.[LayersPerPallet] AS tx_layersperpallet&#xA;      ,tx.[MaxBooksPallet] AS tx_maxbookspallet&#xA;      ,tx.[PackSize] AS tx_packsize&#xA;      ,tx.[resultant_payload] AS final_xml_payload&#xA;&#x9;  ,tx.run_id AS tx_run_id&#xA;  FROM [final].[titles] tx&#xA;)&#xA;SELECT * INTO ReconDB.dbo.titles_src_transformation_check_results&#xA; FROM (&#xA;SELECT fqy.*&#xA;      ,CASE WHEN ISBN_Match_Result = 1 AND CreatedOn_Match_Result = 1 AND Plant_Match_Result = 1 AND StorageLocation_Match_Result = 1 AND &#xA;&#x9;&#x9;&#x9;&#x9; SupplyEd_Match_Result = 1 AND AnswerCode_Match_Result = 1 AND ISBNName_Match_Result = 1 AND OriginalPubDate_Match_Result = 1 AND&#xA;&#x9;&#x9;&#x9;&#x9; commoditycode_Match_Result = 1 AND commoditycode2_Match_Result = 1 AND SEPublicationDate_Match_Result = 1 AND SEPublicationPrice_Match_Result = 1 AND &#xA;&#x9;&#x9;&#x9;&#x9; Author_Match_Result = 1 AND FinancePublisher_Match_Result = 1 AND FinanceImprint_Match_Result = 1 AND ExportPubDate_Match_Result = 1 AND &#xA;&#x9;&#x9;&#x9;&#x9; Binding_Match_Result = 1 AND countryoforigin_Match_Result = 1 THEN 'Passed' ELSE 'Failed' END AS all_attributes_match_result&#xA;&#xA;  FROM (&#xA;SELECT src.*&#xA;      ,tx.*&#xA;&#x9;  ,CASE WHEN src.src_ISBN = tx.tx_ISBN THEN 1 ELSE 0 END AS ISBN_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_createdon = tx.tx_createdon THEN 1 ELSE 0 END AS CreatedOn_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_plant = tx.tx_plant THEN 1 ELSE 0 END AS Plant_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_storagelocation = tx.tx_storagelocation THEN 1 ELSE 0 END AS StorageLocation_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_supplyEdition = tx.tx_SupplyEd THEN 1 ELSE 0 END AS SupplyEd_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_AnswerCode = tx.tx_AnswerCode THEN 1 ELSE 0 END AS AnswerCode_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_ISBNName = tx.tx_ISBNName THEN 1 ELSE 0 END AS ISBNName_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_OriginalPubDate = tx.tx_originalpubdate THEN 1 ELSE 0 END AS OriginalPubDate_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_commoditycode = tx.tx_commoditycode THEN 1 ELSE 0 END AS commoditycode_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_commoditycode2 = tx.tx_commoditycode2 THEN 1 ELSE 0 END AS commoditycode2_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_sepublicationdate = tx.tx_sepublicationdate THEN 1 ELSE 0 END AS SEPublicationDate_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_sepublicationprice = tx.tx_sepublicationprice THEN 1 ELSE 0 END AS SEPublicationPrice_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_authorartist = tx.tx_author THEN 1 ELSE 0 END AS Author_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_financepublisher = tx.tx_financepublisher THEN 1 ELSE 0 END AS FinancePublisher_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_financeimprint = tx.tx_financeimprint THEN 1 ELSE 0 END AS FinanceImprint_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_exportpubdate= tx.tx_exportpubdate THEN 1 ELSE 0 END AS ExportPubDate_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_binding = tx.tx_binding THEN 1 ELSE 0 END AS Binding_Match_Result&#xA;&#x9;  ,CASE WHEN src.src_countryoforigin = tx.tx_countryoforigin THEN 1 ELSE 0 END AS countryoforigin_Match_Result&#xA;  FROM src_titles src&#xA;  JOIN tx_titles tx ON src.src_ISBN = tx.tx_ISBN AND src.src_supplyEdition = tx.tx_SupplyEd AND src.run_id = tx.tx_run_id&#xA; ) fqy) ilv2;&#xA;&#xA; GO" xmlns:SQLTask="www.microsoft.com/sqlserver/dts/tasks/sqltask" />
+          </DTS:ObjectData>
+        </DTS:Executable>
+      </DTS:Executables>
+      <DTS:PrecedenceConstraints>
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Populate Title Recon Tables New.PrecedenceConstraints[Constraint]"
+          DTS:CreationName=""
+          DTS:DTSID="{7CB2606B-B3A3-4F6C-B2D0-CDB15CF83230}"
+          DTS:From="Package\Populate Title Recon Tables New\Populate Title Dimension recon"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint"
+          DTS:To="Package\Populate Title Recon Tables New\Populate Title Attributes recon" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Populate Title Recon Tables New.PrecedenceConstraints[Constraint 1]"
+          DTS:CreationName=""
+          DTS:DTSID="{3CEB790D-202C-4C91-8CB0-43AE95060721}"
+          DTS:From="Package\Populate Title Recon Tables New\Populate Title Attributes recon"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 1"
+          DTS:To="Package\Populate Title Recon Tables New\Populate titles_sourcerecord_filter_summary" />
+        <DTS:PrecedenceConstraint
+          DTS:refId="Package\Populate Title Recon Tables New.PrecedenceConstraints[Constraint 2]"
+          DTS:CreationName=""
+          DTS:DTSID="{1FA78CAC-AD62-47A3-9BAB-0D9CD0ACCB89}"
+          DTS:From="Package\Populate Title Recon Tables New\Populate titles_sourcerecord_filter_summary"
+          DTS:LogicalAnd="True"
+          DTS:ObjectName="Constraint 2"
+          DTS:To="Package\Populate Title Recon Tables New\Populate titles_src_transformation_check_results" />
+      </DTS:PrecedenceConstraints>
+    </DTS:Executable>
   </DTS:Executables>
   <DTS:DesignTimeProperties><![CDATA[<?xml version="1.0"?>
 <!--This CDATA section contains the layout information of the package. The section includes information such as (x,y) coordinates, width, and height.-->
@@ -7395,7 +7498,7 @@ SELECT src.*
     design-time-name="Package">
     <LayoutInfo>
       <GraphLayout
-        Capacity="16" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
+        Capacity="32" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
           Size="257.333333333334,42"
           Id="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data"
@@ -7518,11 +7621,100 @@ SELECT src.*
         </EdgeLayout>
         <ContainerLayout
           HeaderHeight="43"
-          IsExpanded="True"
-          PanelSize="684,382"
-          Size="684,424.666666666667"
+          IsExpanded="False"
+          PanelSize="684,381.333333333334"
+          Size="684,42.6666666666667"
           Id="Package\Populate Title Recon Tables"
-          TopLeft="141,42" />
+          TopLeft="39.7500015087426,35.8421051472508" />
+        <NodeLayout
+          Size="228,42.6666666666667"
+          Id="Package\Populate Title Recon Tables New\Populate Title Dimension recon"
+          TopLeft="48.6249996926637,22.8596512220133" />
+        <NodeLayout
+          Size="222.666666666667,42.6666666666667"
+          Id="Package\Populate Title Recon Tables New\Populate Title Attributes recon"
+          TopLeft="51.1249996554105,90.5964946022544" />
+        <EdgeLayout
+          Id="Package\Populate Title Recon Tables New.PrecedenceConstraints[Constraint]"
+          TopLeft="162.541666340704,65.5263178886799">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,25.0701767135745"
+              Start="0,0"
+              End="0,17.5701767135745">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,17.5701767135745" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="290.666666666667,42.6666666666667"
+          Id="Package\Populate Title Recon Tables New\Populate titles_sourcerecord_filter_summary"
+          TopLeft="18.6249998044223,166.543864452828" />
+        <EdgeLayout
+          Id="Package\Populate Title Recon Tables New.PrecedenceConstraints[Constraint 1]"
+          TopLeft="163.20833306325,133.263161268921">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,33.2807031839068"
+              Start="0,0"
+              End="0,25.7807031839068">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.7807031839068" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <NodeLayout
+          Size="312,42.6666666666667"
+          Id="Package\Populate Title Recon Tables New\Populate titles_src_transformation_check_results"
+          TopLeft="10.3749880138788,242.491234303401" />
+        <EdgeLayout
+          Id="Package\Populate Title Recon Tables New.PrecedenceConstraints[Constraint 2]"
+          TopLeft="165.166660575817,209.210531119495">
+          <EdgeLayout.Curve>
+            <mssgle:Curve
+              StartConnector="{assembly:Null}"
+              EndConnector="0,33.2807031839068"
+              Start="0,0"
+              End="0,25.7807031839068">
+              <mssgle:Curve.Segments>
+                <mssgle:SegmentCollection
+                  Capacity="5">
+                  <mssgle:LineSegment
+                    End="0,25.7807031839068" />
+                </mssgle:SegmentCollection>
+              </mssgle:Curve.Segments>
+            </mssgle:Curve>
+          </EdgeLayout.Curve>
+          <EdgeLayout.Labels>
+            <EdgeLabelCollection />
+          </EdgeLayout.Labels>
+        </EdgeLayout>
+        <ContainerLayout
+          HeaderHeight="43"
+          IsExpanded="True"
+          PanelSize="390,354.666666666667"
+          Size="390,397.333333333334"
+          Id="Package\Populate Title Recon Tables New"
+          TopLeft="156.249997671694,110.842107349486" />
       </GraphLayout>
     </LayoutInfo>
   </Package>
@@ -7532,7 +7724,7 @@ SELECT src.*
       <GraphLayout
         Capacity="4" xmlns="clr-namespace:Microsoft.SqlServer.IntegrationServices.Designer.Model.Serialization;assembly=Microsoft.SqlServer.IntegrationServices.Graph" xmlns:mssgle="clr-namespace:Microsoft.SqlServer.Graph.LayoutEngine;assembly=Microsoft.SqlServer.Graph" xmlns:assembly="http://schemas.microsoft.com/winfx/2006/xaml">
         <NodeLayout
-          Size="166,42"
+          Size="164,42.6666666666667"
           Id="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data\Read Recon Data"
           TopLeft="106,79" />
         <NodeLayout
@@ -7541,18 +7733,18 @@ SELECT src.*
           TopLeft="570,80" />
         <EdgeLayout
           Id="Package\Populate Title Recon Tables\Populate Title Attributes Recon Data.Paths[OLE DB Source Output]"
-          TopLeft="272,100.5">
+          TopLeft="270,100.666666666667">
           <EdgeLayout.Curve>
             <mssgle:Curve
               StartConnector="{assembly:Null}"
-              EndConnector="298,0"
+              EndConnector="300,0"
               Start="0,0"
-              End="290.5,0">
+              End="292.5,0">
               <mssgle:Curve.Segments>
                 <mssgle:SegmentCollection
                   Capacity="5">
                   <mssgle:LineSegment
-                    End="290.5,0" />
+                    End="292.5,0" />
                 </mssgle:SegmentCollection>
               </mssgle:Curve.Segments>
             </mssgle:Curve>
